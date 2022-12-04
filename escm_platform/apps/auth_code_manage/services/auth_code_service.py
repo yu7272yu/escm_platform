@@ -6,13 +6,11 @@ from datetime import timedelta
 from django.db import transaction
 
 from user_manage.models.user_info_model import UserInfoModel
-from video_analysis_platform.common.jwt_token import JwtToken
-from video_analysis_platform.common.constants import Constants
-from video_analysis_platform.common.logger import Logger
-from video_analysis_platform.common.obj_to_dict import ObjToDict
+from escm_platform.common.jwt_token import JwtToken
+from escm_platform.common.constants import Constants
+from escm_platform.common.logger import Logger
+from escm_platform.common.obj_to_dict import ObjToDict
 from auth_code_manage.models.auth_code_model import AuthCodeModel
-from app_manage.models.app_info_model import AppInfoModel
-
 
 class AuthCodeService(object):
     def __init__(self):

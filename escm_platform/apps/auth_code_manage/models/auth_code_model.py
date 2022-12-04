@@ -15,7 +15,6 @@ class AuthCodeModel(BaseModel):
     start_time = models.CharField(max_length=16, blank=True, verbose_name='激活时间')
     end_time = models.CharField(max_length=16, blank=True, verbose_name='结束时间')
     data_status = models.IntegerField(default=Constants.DATA_IS_USED, verbose_name='数据状态')
-    app_info = models.ManyToManyField(to='app_manage.AppInfoModel')
 
     class Meta:
         db_table = 'sh_authorization_code'

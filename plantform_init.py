@@ -46,7 +46,7 @@ def mysql_db():
 
 def migrate_db():
     try:
-        os.system('python3 manage.py makemigrations  app_manage auth_code_manage' )
+        os.system('python3 manage.py makemigrations user_manage app_manage auth_code_manage' )
         os.system('python3 manage.py migrate' )
         db = pymysql.connect(
             host=  Config.mysql_host,  # 连接名称，默认127.0.0.1
@@ -88,6 +88,8 @@ def initial_data():
             user_1.save()
 
 
+        print("创建数据成功")
+
     except Exception as e:
         print("创建数据失败:", e)
         
@@ -95,4 +97,4 @@ def initial_data():
 if __name__ == '__main__':
     mysql_db()
     migrate_db()
-    # initial_data()
+    initial_data()
