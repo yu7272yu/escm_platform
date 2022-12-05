@@ -5,8 +5,8 @@ import time
 from config import Config
 from escm_platform.common.fdfs_util.fdfs_util import FastDfsUtil
 from escm_platform.settings import SECRET_KEY
-from user_manage.models.user_info_model import UserInfoModel
-from user_manage.models.user_role_model import UserRoleModel
+from user_manage.models.user_info_model import UserInfo
+from user_manage.models.user_role_model import UserRole
 from escm_platform.common.constants import Constants
 from escm_platform.common.obj_to_dict import ObjToDict
 from escm_platform.common.sha256_encryption import ShaEncryption
@@ -36,18 +36,18 @@ class UserInfoService(object):
         try:
             # 根据用户角色--展示不同的信息--root 超级管理员展示--
             if request.user.sh_user_role_name == Constants.SUPPER_ADMIN:
-                users_obj = UserInfoModel.objects.exclude(sh_user_role_id=request.user.sh_user_role_id) \
+                users_obj = UserInfo.objects.exclude(sh_user_role_id=request.user.sh_user_role_id) \
                     .filter(**kwargs).order_by('-id')
 
             # 普通管理员--则列表中只显示普通用户的
             else:
                 # 获取普通用户的角色对应的id
                 q_role_dict = {'role_name': Constants.USER, 'data_status': Constants.DATA_IS_USED}
-                uer_role_obj = UserRoleModel.objects.filter(**q_role_dict).values('id').first()
+                uer_role_obj = UserRole.objects.filter(**q_role_dict).values('id').first()
 
                 # 筛选添加只有普通用户id
                 kwargs['sh_user_role_id'] = uer_role_obj.get('id')
-                users_obj = UserInfoModel.objects.filter(**kwargs).order_by('-id')
+                users_obj = UserInfo.objects.filter(**kwargs).order_by('-id')
 
         except Exception as e:
             users_obj = None
@@ -88,7 +88,7 @@ class UserInfoService(object):
 
     def user_info_service(self, sh_user_info_id, heart_beat_flag=None):
         try:
-            user_obj = UserInfoModel.objects.filter(id=sh_user_info_id).first()
+            user_obj = UserInfo.objects.filter(id=sh_user_info_id).first()
 
         except Exception as e:
             Logger().error('user_info_service:{}'.format(e), Constants.USER_MANAGE_LOG)
@@ -132,7 +132,7 @@ class UserInfoService(object):
         user_dict = {'user_name': user_obj.user_name,
                      'user_name__contains': user_obj.user_name,
                      'data_status': Constants.DATA_IS_USED}
-        q_user_obj = UserInfoModel.objects.filter(**user_dict).first()
+        q_user_obj = UserInfo.objects.filter(**user_dict).first()
 
         if q_user_obj:
             return {'code': Constants.WEB_REQUEST_CODE_ERROR, 'msg': Constants.USER_NAME_IS_EXISTS}
@@ -158,7 +158,7 @@ class UserInfoService(object):
         add_dict = ObjToDict().obj_to_dict(user_obj)
 
         try:
-            add_user_obj = UserInfoModel.objects.create(**add_dict)
+            add_user_obj = UserInfo.objects.create(**add_dict)
         except Exception as e:
             Logger().error('user_info_add_service:{}'.format(e), Constants.USER_MANAGE_LOG)
             if data:
@@ -179,7 +179,7 @@ class UserInfoService(object):
         try:
             for sh_user_info_id in delete_user_obj.sh_user_info_id.split(','):
                 # 保证并发异常--遍历操作
-                user_obj = UserInfoModel.objects.filter(id=sh_user_info_id).first()
+                user_obj = UserInfo.objects.filter(id=sh_user_info_id).first()
 
                 if user_obj is None:
                     delete_user_obj.option_flag = True
@@ -189,7 +189,7 @@ class UserInfoService(object):
                     Logger().error(error_msg, Constants.USER_MANAGE_LOG)
                     break
 
-                res = UserInfoModel.objects.filter(id=sh_user_info_id, update_time=user_obj.update_time).update(
+                res = UserInfo.objects.filter(id=sh_user_info_id, update_time=user_obj.update_time).update(
                     data_status=Constants.DATA_IS_DELETED, update_time=int(time.time()))
 
                 # 批量操作有一个失败则全部失败
@@ -221,7 +221,7 @@ class UserInfoService(object):
     def user_info_update_service(self, update_user_obj):
         # 获取当前数据对象
         try:
-            user_obj = UserInfoModel.objects.filter(id=update_user_obj.sh_user_info_id).first()
+            user_obj = UserInfo.objects.filter(id=update_user_obj.sh_user_info_id).first()
 
         except Exception as e:
             Logger().error('user_info_update_service-get:{}'.format(e), Constants.USER_MANAGE_LOG)
@@ -266,7 +266,7 @@ class UserInfoService(object):
 
         print('update_dict---{}'.format(update_dict))
         try:
-            update_res = UserInfoModel.objects.filter(id=user_obj.id, update_time=user_obj.update_time).update(
+            update_res = UserInfo.objects.filter(id=user_obj.id, update_time=user_obj.update_time).update(
                 **update_dict)
 
         except Exception as e:
@@ -289,7 +289,7 @@ class UserInfoService(object):
 
     def user_info_update_password_service(self, user_info_obj):
         try:
-            user_obj = UserInfoModel.objects.filter(id=user_info_obj.sh_user_info_id).first()
+            user_obj = UserInfo.objects.filter(id=user_info_obj.sh_user_info_id).first()
 
         except Exception as e:
             Logger().error('user_info_update_password_service-get:{}'.format(e), Constants.USER_MANAGE_LOG)
@@ -308,7 +308,7 @@ class UserInfoService(object):
         new_password = self.sha_encryption.add_sha256(user_info_obj.new_password1, SECRET_KEY)
 
         try:
-            update_res = UserInfoModel.objects.filter(id=user_obj.id, update_time=user_obj.update_time).update(
+            update_res = UserInfo.objects.filter(id=user_obj.id, update_time=user_obj.update_time).update(
                 user_password=new_password, update_time=int(time.time()))
 
         except Exception as e:
@@ -329,7 +329,7 @@ class UserInfoService(object):
             return {'code': Constants.WEB_REQUEST_CODE_ERROR, 'msg': Constants.NO_JURISDICTION_TO_OPERATION}
 
         try:
-            user_obj = UserInfoModel.objects.filter(id=sh_user_info_id).first()
+            user_obj = UserInfo.objects.filter(id=sh_user_info_id).first()
 
         except Exception as e:
             Logger().error('user_info_reset_password_service-get:{}'.format(e), Constants.USER_MANAGE_LOG)
@@ -342,7 +342,7 @@ class UserInfoService(object):
         new_password = self.sha_encryption.add_sha256(Constants.USER_ORIGIN_PASSWORD, SECRET_KEY)
 
         try:
-            update_res = UserInfoModel.objects.filter(id=sh_user_info_id, update_time=user_obj.update_time).update(
+            update_res = UserInfo.objects.filter(id=sh_user_info_id, update_time=user_obj.update_time).update(
                 user_password=new_password, update_time=int(time.time()))
 
         except Exception as e:
@@ -360,7 +360,7 @@ class UserInfoService(object):
     def user_app_authorization_service(self, auth_user_obj):
         # 查询到当前用户的对象
         try:
-            user_obj = UserInfoModel.objects.filter(id=auth_user_obj.sh_user_info_id).first()
+            user_obj = UserInfo.objects.filter(id=auth_user_obj.sh_user_info_id).first()
 
         except Exception as e:
             Logger().error('user_app_authorization_service-get:{}'.format(e), Constants.USER_MANAGE_LOG)

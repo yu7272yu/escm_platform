@@ -2,7 +2,7 @@
 from django.http import QueryDict
 from escm_platform.common.base_view import BaseView
 from escm_platform.common.constants import Constants
-from user_manage.models.user_role_model import UserRoleModel
+from user_manage.models.user_role_model import UserRole
 from user_manage.services.user_role_service import UserRoleService
 from escm_platform.common.logger import Logger
 # from escm_platform.common.scheduler_center import scheduler
@@ -35,7 +35,7 @@ class UserRoleView(BaseView):
                     'role_name': Constants.SUPPER_ADMIN
                 }
                 # 查询超级管理员的id
-                super_admin_obj = UserRoleModel.objects.filter(**super_admin_dict).first()
+                super_admin_obj = UserRole.objects.filter(**super_admin_dict).first()
 
                 if super_admin_obj is None:
                     return {'code': Constants.WEB_REQUEST_CODE_ERROR, 'msg': Constants.SELECT_SQL_ERROR}
@@ -46,7 +46,7 @@ class UserRoleView(BaseView):
             else:
                 return {'code': Constants.WEB_REQUEST_CODE_ERROR, 'msg': Constants.HAVE_NO_EXPECT_DATA}
 
-            roles_obj = UserRoleModel.objects.exclude(**exclude_dict).filter(**filter_dict).all()
+            roles_obj = UserRole.objects.exclude(**exclude_dict).filter(**filter_dict).all()
 
         except Exception as e:
             Logger().error('user_role_list：{}'.format(e), Constants.USER_MANAGE_LOG)

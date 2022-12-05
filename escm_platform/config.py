@@ -1,20 +1,28 @@
 # coding=utf-8
-
-
+import yaml,traceback, os
 class Config(object):
+    DOCKER_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'docker-compose.yml')
+    def docker_config(filepath=DOCKER_PATH):
+        try:
+            with open(filepath, 'r') as fh:
+                return yaml.safe_load(fh)
+        except (IOError, yaml.YAMLError) as e:
+            raise Exception(u"{}".format(traceback.format_exc()))
+    
+    db_conf = docker_config()
+
     """
     平台配置信息
     """
-
     # mysql 配置信息
-    mysql_host = 'localhost'
+    mysql_host = db_conf['services']['db']['networks']['app_net']['ipv4_address']
     mysql_port = 3306
     mysql_user = 'root'
-    mysql_password = '123456'
-    mysql_db = 'escm'
+    mysql_password = db_conf['services']['db']['environment'][2].split('=')[1]
+    mysql_db = db_conf['services']['db']['environment'][3].split('=')[1]
 
     # reids配置信息
-    redis_host = 'localhost'
+    redis_host = db_conf['services']['redis']['networks']['app_net']['ipv4_address']
     redis_port = 6379
     redis_library = 0
     
@@ -38,3 +46,4 @@ class Config(object):
     machine_type_list = ['枪机', '球机', '半球', '小摄像头']
     # 阈值名称
     threshold_type_list = ['检测阈值', '违停时间阈值','限速阈值', '短信提示阈值', '删除阈值', '速度阈值', '人数阈值', '人车数量阈值', '人车停留时间阈值', '单位时间阈值', '变化量阈值']
+

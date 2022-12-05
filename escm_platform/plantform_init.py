@@ -2,8 +2,8 @@ import pymysql,sys, os, django
 import re
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'escm_platform.settings')
 django.setup()
-from user_manage.models.user_info_model import UserInfoModel
-from user_manage.models.user_role_model import UserRoleModel
+from user_manage.models.user_info_model import UserInfo
+from user_manage.models.user_role_model import UserRole
 
 
 
@@ -46,8 +46,8 @@ def mysql_db():
 
 def migrate_db():
     try:
-        os.system('python3 manage.py makemigrations user_manage app_manage auth_code_manage' )
-        os.system('python3 manage.py migrate' )
+        os.system('python3 escm_platform/manage.py makemigrations user_manage app_manage auth_code_manage' )
+        os.system('python3 escm_platform/manage.py migrate' )
         db = pymysql.connect(
             host=  Config.mysql_host,  # 连接名称，默认127.0.0.1
             user= Config.mysql_user,  # 用户名
@@ -76,13 +76,13 @@ def initial_data():
     try:
         print("开始创建数据")
         # 角色
-        r1, r1_res = UserRoleModel.objects.get_or_create(role_name="超级管理员", data_status=Constants.DATA_IS_USED )
-        r2, r2_res = UserRoleModel.objects.get_or_create(role_name="管理员", data_status=Constants.DATA_IS_USED )
-        r2, r2_res = UserRoleModel.objects.get_or_create(role_name="普通用户", data_status=Constants.DATA_IS_USED )
+        r1, r1_res = UserRole.objects.get_or_create(role_name="超级管理员", data_status=Constants.DATA_IS_USED )
+        r2, r2_res = UserRole.objects.get_or_create(role_name="管理员", data_status=Constants.DATA_IS_USED )
+        r2, r2_res = UserRole.objects.get_or_create(role_name="普通用户", data_status=Constants.DATA_IS_USED )
 
         # 用户
         u_1={'user_name': 'root','sh_user_role_id': r1.id, 'data_status': Constants.DATA_IS_USED }
-        user_1, u1_res = UserInfoModel.objects.get_or_create(**u_1)
+        user_1, u1_res = UserInfo.objects.get_or_create(**u_1)
         if u1_res:
             user_1.user_password = ShaEncryption().add_sha256('123456', SECRET_KEY)
             user_1.save()

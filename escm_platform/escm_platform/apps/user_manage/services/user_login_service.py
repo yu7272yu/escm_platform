@@ -5,7 +5,7 @@ from escm_platform.common.constants import Constants
 from escm_platform.common.sha256_encryption import ShaEncryption
 from escm_platform.common.jwt_token import JwtToken
 from escm_platform.common.time_helper import TimeHelper
-from user_manage.models.user_info_model import UserInfoModel
+from user_manage.models.user_info_model import UserInfo
 from escm_platform.common.logger import Logger
 
 
@@ -25,7 +25,7 @@ class UserLoginService(object):
         }
 
         try:
-            user_obj = UserInfoModel.objects.filter(**query_dict).first()
+            user_obj = UserInfo.objects.filter(**query_dict).first()
         except Exception as e:
             Logger().error('user_login_service-get:{}'.format(e), Constants.USER_MANAGE_LOG)
             return {'code': Constants.WEB_REQUEST_CODE_ERROR, 'msg': Constants.SELECT_SQL_ERROR}

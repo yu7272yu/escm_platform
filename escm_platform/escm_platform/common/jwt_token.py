@@ -5,7 +5,7 @@ from escm_platform import settings
 from django.http import JsonResponse
 from escm_platform.common.constants import Constants
 from escm_platform.common.time_helper import TimeHelper
-from user_manage.models.user_info_model import UserInfoModel
+from user_manage.models.user_info_model import UserInfo
 from auth_code_manage.models.auth_code_model import AuthCodeModel
 
 
@@ -93,7 +93,7 @@ class JwtToken(object):
 
             # 获取user信息
             try:
-                user_info_obj = UserInfoModel.objects.filter(user_name=user_name, data_status=Constants.DATA_IS_USED) \
+                user_info_obj = UserInfo.objects.filter(user_name=user_name, data_status=Constants.DATA_IS_USED) \
                     .values('sh_user_role__role_name', 'sh_user_role_id', 'id').first()
 
                 if user_info_obj is None:

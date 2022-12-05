@@ -1,0 +1,63 @@
+version: '3.5'
+volumes: 
+  mysql-data:
+  redis-data:
+  redis.conf:
+services:
+  redis:
+    image: redis:alpine3.16
+    container_name: escm_redis
+    restart: always
+    command: redis-server /etc/redis.conf
+    # ports:
+    #   - 6379:6379
+    volumes:
+      - redis-data:/data
+      - redis.conf:/etc/redis.conf
+    networks:
+      app_net:
+        ipv4_address: "172.19.0.13"
+  db:
+    image: mysql:8.0.30
+    container_name: escm_db # 指定容器名称，如果不设置此参数，则由系统自动生成
+    restart: always # 设置容器自启模式
+    command: --default-authentication-plugin=mysql_native_password #这行代码解决无法访问的问题
+    environment:
+      - "TZ=Asia/Shanghai" # 设置容器时区与宿主机保持一致
+      - "MYSQL_ROOT_USER=root"
+      - "MYSQL_ROOT_PASSWORD=123456"
+      - "MYSQL_DATABASE=project_db"
+    depends_on:
+      - redis
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      app_net:
+        ipv4_address: "172.19.0.14"
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: bash -c "python escm_platform/manage.py runserver 0.0.0.0:6001"
+    # command: bash -c "uwsgi --ini uwsgi.ini "
+    restart: always
+    volumes:
+      - ./:/escm_platform
+    ports:
+      - "6003:6001"
+    environment:
+      TZ: "Asia/Shanghai"
+    depends_on:
+      - db
+      - redis
+    links:
+      - db
+      - redis
+    container_name: escm_app
+    networks:
+      app_net:
+        ipv4_address: "172.19.0.15"
+networks:
+  app_net:
+    external: 
+      name: public_network

@@ -5,7 +5,7 @@ from datetime import date
 from datetime import timedelta
 from django.db import transaction
 
-from user_manage.models.user_info_model import UserInfoModel
+from user_manage.models.user_info_model import UserInfo
 from escm_platform.common.jwt_token import JwtToken
 from escm_platform.common.constants import Constants
 from escm_platform.common.logger import Logger
@@ -67,7 +67,7 @@ class AuthCodeService(object):
             app_obj = AppInfoModel.objects.filter(**app_dict).all()
             now_app_ids = [one.id for one in app_obj]
             print('app_obj--{}'.format(app_obj))
-            user_info = UserInfoModel.objects.exclude(user_name=Constants.SUPER_ADMIN_NAME)
+            user_info = UserInfo.objects.exclude(user_name=Constants.SUPER_ADMIN_NAME)
             for user in user_info:
                 old_app_ids = [one.id for one in user.app_info.all()]
                 app_ids = list(set(now_app_ids) & set(old_app_ids))

@@ -5,7 +5,7 @@ from user_manage.services.user_info_service import UserInfoService
 from escm_platform.common.constants import Constants
 from django.http import QueryDict
 from escm_platform.common.logger import Logger
-from user_manage.models.user_role_model import UserRoleModel
+from user_manage.models.user_role_model import UserRole
 
 
 class UserInfoView(BaseView):
@@ -85,7 +85,7 @@ class UserInfoView(BaseView):
         }
         # 查询超级管理员的id
         try:
-            super_admin_obj = UserRoleModel.objects.filter(**super_admin_dict).first()
+            super_admin_obj = UserRole.objects.filter(**super_admin_dict).first()
 
         except Exception as e:
             Logger().error('user_info_register：{}'.format(e), Constants.USER_MANAGE_LOG)

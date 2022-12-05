@@ -21,3 +21,10 @@ pdb.set_trace()
 
 <!-- 增加测试数据库容器 -->
 docker run -d --name=mysql_test -p 3306:3306  -e MYSQL_ROOT_PASSWORD=123456 mysql:8.0.30
+
+
+#### 服务启动情况下，生成库,表，数据
+```
+docker-compose exec app python project/plantform_init.py 
+```
+
