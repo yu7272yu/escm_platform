@@ -50,9 +50,6 @@ services:
     depends_on:
       - db
       - redis
-    links:
-      - db
-      - redis
     container_name: escm_app
     networks:
       app_net:
