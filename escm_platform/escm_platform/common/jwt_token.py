@@ -75,21 +75,21 @@ class JwtToken(object):
 
             # 超级管理员、更新授权码、查看授权码码请求，不需要校验授权码信息。
             user_name = json_data.get('user_name')
-            if user_name != Constants.SUPER_ADMIN_NAME and request_method not in Constants.NO_CHECK_AUTH_CODE_LIST:
+            # if user_name != Constants.SUPER_ADMIN_NAME and request_method not in Constants.NO_CHECK_AUTH_CODE_LIST:
                 # todo----------------查询授权吗权限
                 # 第一 有授权码--第二且没有过期
-                auth_obj = AuthCode.objects.first()
+                # auth_obj = AuthCode.objects.first()
 
-                # 表示没有授权码
-                if auth_obj is None:
-                    json_data = {'code': Constants.WEB_REQUEST_CODE_ERROR, 'msg': Constants.AUTH_CODE_PROMPT_MSG}
-                    return JsonResponse(json_data, safe=False)
+                # # 表示没有授权码
+                # if auth_obj is None:
+                #     json_data = {'code': Constants.WEB_REQUEST_CODE_ERROR, 'msg': Constants.AUTH_CODE_PROMPT_MSG}
+                #     return JsonResponse(json_data, safe=False)
 
-                # 有授权码 且已经过期--到期时间和今天对比 todo
-                if int(time.time()) >= (
-                    int((time.mktime(time.strptime(auth_obj.end_time, '%Y-%m-%d')))) + 24 * 60 * 60):
-                    json_data = {'code': Constants.WEB_REQUEST_CODE_ERROR, 'msg': Constants.AUTH_CODE_PROMPT_MSG}
-                    return JsonResponse(json_data, safe=False)
+                # # 有授权码 且已经过期--到期时间和今天对比 todo
+                # if int(time.time()) >= (
+                #     int((time.mktime(time.strptime(auth_obj.end_time, '%Y-%m-%d')))) + 24 * 60 * 60):
+                #     json_data = {'code': Constants.WEB_REQUEST_CODE_ERROR, 'msg': Constants.AUTH_CODE_PROMPT_MSG}
+                #     return JsonResponse(json_data, safe=False)
 
             # 获取user信息
             try:
