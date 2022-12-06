@@ -6,7 +6,7 @@ from django.http import JsonResponse
 from escm_platform.common.constants import Constants
 from escm_platform.common.time_helper import TimeHelper
 from user_manage.models.user_info_model import UserInfo
-from auth_code_manage.models.auth_code_model import AuthCodeModel
+from auth_code_manage.models.auth_code_model import AuthCode
 
 
 class JwtToken(object):
@@ -78,7 +78,7 @@ class JwtToken(object):
             if user_name != Constants.SUPER_ADMIN_NAME and request_method not in Constants.NO_CHECK_AUTH_CODE_LIST:
                 # todo----------------查询授权吗权限
                 # 第一 有授权码--第二且没有过期
-                auth_obj = AuthCodeModel.objects.first()
+                auth_obj = AuthCode.objects.first()
 
                 # 表示没有授权码
                 if auth_obj is None:

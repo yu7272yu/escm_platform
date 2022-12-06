@@ -4,7 +4,7 @@ from escm_platform.common.constants import Constants
 from escm_platform.common.base_view import BaseView
 from auth_code_manage.objects.auth_code_object import AuthCodeObject
 from auth_code_manage.services.auth_code_service import AuthCodeService
-from auth_code_manage.models.auth_code_model import AuthCodeModel
+from auth_code_manage.models.auth_code_model import AuthCode
 
 
 class AuthCodeView(BaseView):
@@ -65,7 +65,7 @@ class AuthCodeView(BaseView):
 
     def auth_code_info(self, request):
         try:
-            auth_obj = AuthCodeModel.objects.filter(data_status=Constants.DATA_IS_USED).first()
+            auth_obj = AuthCode.objects.filter(data_status=Constants.DATA_IS_USED).first()
 
         except Exception as e:
             Logger().error('auth_code_info-error:{}'.format(e), Constants.AUTH_CODE_MANAGE_LOG)

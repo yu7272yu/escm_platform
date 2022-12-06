@@ -10,7 +10,7 @@ from escm_platform.common.jwt_token import JwtToken
 from escm_platform.common.constants import Constants
 from escm_platform.common.logger import Logger
 from escm_platform.common.obj_to_dict import ObjToDict
-from auth_code_manage.models.auth_code_model import AuthCodeModel
+from auth_code_manage.models.auth_code_model import AuthCode
 
 class AuthCodeService(object):
     def __init__(self):
@@ -78,18 +78,18 @@ class AuthCodeService(object):
             del dict_data['app_names']
 
             # 获取当前授权码对象
-            auth_obj = AuthCodeModel.objects.first()
+            auth_obj = AuthCode.objects.first()
             # 如果没有授权码--则直接新增
             if auth_obj is None:
                 # 新生成验证码对象
-                auth_obj = AuthCodeModel.objects.create(**dict_data)
+                auth_obj = AuthCode.objects.create(**dict_data)
                 auth_obj.app_info.add(*app_obj)
 
             # 更新
             else:
                 auth_obj.app_info.clear()
                 dict_data['update_time'] = int(time.time())
-                AuthCodeModel.objects.filter(id=auth_obj.id, update_time=auth_obj.update_time).update(
+                AuthCode.objects.filter(id=auth_obj.id, update_time=auth_obj.update_time).update(
                     **dict_data)
 
                 print('auth_obj--{}'.format(auth_obj))
