@@ -6,7 +6,7 @@
 #### 运行增强的 django shell：
 
 ```
-python manage.py escm_platform/shell_plus
+python escm_platform/manage.py shell_plus
 打印SQL:  --print-sql
 ```
 
