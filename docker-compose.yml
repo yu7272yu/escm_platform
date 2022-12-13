@@ -38,11 +38,11 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    command: bash -c "python escm_platform/manage.py runserver 0.0.0.0:6001"
+    command: bash -c "python project_platform/manage.py runserver 0.0.0.0:6001"
     # command: bash -c "uwsgi --ini uwsgi.ini "
     restart: always
     volumes:
-      - ./:/escm_platform
+      - ./:/project_platform
     ports:
       - "6003:6001"
     environment:

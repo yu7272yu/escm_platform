@@ -1,18 +1,18 @@
 [toc]
-# escm_platform
+# project_platform
 
 ### 本地调试
 
 #### 运行增强的 django shell：
 
 ```
-python escm_platform/manage.py shell_plus
+python project_platform/manage.py shell_plus
 打印SQL:  --print-sql
 ```
 
 #### 查找定义的urls
 ```
-python3 escm_platform/manage.py show_urls
+python3 project_platform/manage.py show_urls
 ```
 #### 调试断点
 ```
@@ -27,17 +27,17 @@ docker run -d --name=mysql_test -p 3306:3306  -e MYSQL_ROOT_PASSWORD=123456 mysq
 
 #### 服务启动情况下，生成库,表，数据
 ```
-docker-compose exec app python escm_platform/plantform_init.py 
+docker-compose exec app python project_platform/plantform_init.py 
 ```
 
 #### 运行增强的 django shell：
 
 ```
-docker-compose exec app python escm_platform/manage.py shell_plus
+docker-compose exec app python project_platform/manage.py shell_plus
 打印SQL:  --print-sql
 ```
 
 #### 查找定义的urls
 ```
-docker-compose exec app python escm_platform/manage.py show_urls
+docker-compose exec app python project_platform/manage.py show_urls
 ```

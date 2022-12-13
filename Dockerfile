@@ -7,10 +7,10 @@ RUN apt-get update --fix-missing && \
     python -m pip install --upgrade pip
 
 # 设置工作区
-RUN mkdir /escm_platform
-WORKDIR /escm_platform
+RUN mkdir /project_platform
+WORKDIR /project_platform
 # 导入环境
-ADD ./escm_platform/requirement.txt /escm_platform
+ADD ./project_platform/requirement.txt /project_platform
 RUN pip install -i https://pypi.tuna.tsinghua.edu.cn/simple -r requirement.txt --no-cache-dir
 
-# COPY ./escm_platform/. .
+# COPY ./project_platform/. .
