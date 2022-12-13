@@ -41,9 +41,7 @@ INSTALLED_APPS = (
     'django_db_reconnect', # 数据库自动重连
     'django_apscheduler',
     'corsheaders',
-    'user_manage',
-    'app_manage',
-    'auth_code_manage',
+    'base_manage',
 )
 
 MIDDLEWARE = [
